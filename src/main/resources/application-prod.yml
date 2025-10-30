@@ -1,0 +1,71 @@
+# ===================================================================
+# ===== PERFIL DE PRODUCCIÓN (prod) PARA AWS APP RUNNER =============
+# ===================================================================
+
+spring:
+  # --- Configuración de Base de Datos (RDS) ---
+  datasource:
+    # La URL se construye a partir de variables de entorno de App Runner
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}?currentSchema=public&sslmode=require
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10 # Ajustar según la carga esperada
+
+  # --- Configuración de JPA/Hibernate ---
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public # Coincide con ?currentSchema=public
+    hibernate:
+      ddl-auto: validate # ¡MUY IMPORTANTE! Seguro para producción.
+    show-sql: false
+
+  # --- Configuración de Seguridad (Cognito) ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER_URI}
+          jwk-set-uri: ${COGNITO_JWK_SET_URI}
+
+  # --- Configuración Feign ---
+  cloud:
+    openfeign:
+      client:
+        config:
+          auth-service:
+            # El valor se inyecta desde la variable de entorno de App Runner.
+            url: ${AUTH_SERVICE_URL}
+
+# --- URLs de otros Microservicios y Claves API ---
+auth-service:
+  # El valor se inyecta desde las variables de entorno/secrets
+  api-key: ${AUTH_SERVICE_API_KEY}
+
+subscription-service:
+  # El valor se inyecta desde las variables de entorno/secrets
+  api-key: ${SUBSCRIPTION_SERVICE_API_KEY}
+
+# --- Configuración de PayPal (Live) ---
+paypal:
+  mode: live
+  # Todos los valores se inyectan desde las variables de entorno/secrets
+  client-id: ${PAYPAL_CLIENT_ID}
+  client-secret: ${PAYPAL_CLIENT_SECRET}
+  webhook-id: ${PAYPAL_WEBHOOK_ID}
+
+# --- URLs de la Aplicación y AWS ---
+app:
+  frontend-url: ${FRONTEND_URL} # URL del frontend de producción
+  sqs:
+    subscription-events-queue-url: ${SQS_QUEUE_URL}
+  email:
+    from: ${FROM_EMAIL} # Email verificado en SES
+
+# --- Logging para Producción ---
+logging:
+  level:
+    com.eklesa.subscription: INFO # INFO es un buen nivel para prod
+    org.springframework: WARN
+    org.hibernate: WARN

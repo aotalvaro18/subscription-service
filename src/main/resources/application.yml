@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: subscription-service
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev} # Perfil 'local' por defecto
+
+  # --- Configuración de Base dse Datos ---
+  datasource:
+    # Usa placeholders con valores por defecto para desarrollo local
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:eklesa_subscriptions_db}?currentSchema=public
+    username: ${DB_USER:sub_user}
+    password: ${DB_PASSWORD:password}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  
+  # --- Configuración de JPA ---
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public # El schema que creaste en pgAdmin
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: ${DDL_AUTO:validate}
+    show-sql: ${SHOW_SQL:false}
+  
+  # --- Configuración de Seguridad ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER_URI}
+
+  # --- Configuración Feign (LA CLAVE DEL ARREGLO) ---
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: basic
+          # Define el cliente para auth-service
+          auth-service:
+            # ✅ CORRECCIÓN: Proporciona una URL por defecto para el perfil 'local'
+            url: ${AUTH_SERVICE_URL:http://localhost:8081} # Asume que auth-service corre en 8081 localmente
+
+# --- Configuración PayPal ---
+paypal:
+  mode: ${PAYPAL_MODE:sandbox}
+  client-id: ${PAYPAL_CLIENT_ID:}
+  client-secret: ${PAYPAL_CLIENT_SECRET:}
+  webhook-id: ${PAYPAL_WEBHOOK_ID:}
+
+# --- Actuator ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# --- Logging ---
+logging:
+  level:
+    com.eklesa.subscription: DEBUG
+    org.springframework.web: INFO
+
+# Deshabilitar Flyway globalmente
+  flyway:
+    enabled: false

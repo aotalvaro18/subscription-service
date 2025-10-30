@@ -1,0 +1,54 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# ===============================================================
+# ARCHIVOS DE CONFIGURACIÓN Y ENTORNO LOCAL - NO SUBIR A GIT
+# ===============================================================
+
+# Ignorar explícitamente el archivo de configuración de ejecución de VS Code
+.vscode/launch.json
+
+# Ignorar archivos .env que puedan contener secretos
+.env
+*.env
+.env.*
+
+# Ignorar archivos de configuración locales que no siguen el patrón de perfiles
+# (una capa extra de seguridad)
+application-local.*
+
+# Ignorar logs y archivos temporales generados localmente
+logs/
+*.log
+tmp/

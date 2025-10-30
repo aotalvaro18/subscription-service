@@ -1,0 +1,63 @@
+# ===============================================================
+# CONFIGURACIÓN ESPECÍFICA PARA EL PERFIL 'dev'
+# Conexión local a los servicios de AWS (RDS, App Runner, SQS)
+# ===============================================================
+
+spring:
+  # --- Configuración de Conexión a Base de Datos (RDS) ---
+  datasource:
+    url: jdbc:postgresql://auth-service.c76w662u06ft.us-east-2.rds.amazonaws.com:5432/eklesa_subscriptions?currentSchema=public
+    # ✅ CORRECCIÓN: Usamos placeholders para las credenciales. Los valores reales
+    # vendrán del launch.json, que NO está en Git.
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  # --- Configuración de JPA/Hibernate ---
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public # Coincide con tu ?currentSchema=public
+    hibernate:
+      ddl-auto: validate # Valida que tus entidades JPA coincidan con las tablas
+    show-sql: true # Muestra las queries SQL para debugging
+  
+  # --- Deshabilitar Flyway (como lo tienes) ---
+  flyway:
+    enabled: false
+
+  # --- Configuración de Seguridad (Cognito) ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_yogd8td3E
+          # ✅ CORRECCIÓN FINAL: Añadido el jwk-set-uri que faltaba
+          jwk-set-uri: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_yogd8td3E/.well-known/jwks.json
+
+# --- URLs de otros Microservicios ---
+auth-service:
+  url: qawwfrmbwg.us-east-2.awsapprunner.com # Sin https://
+  # Nota: Las API keys se inyectarán desde el launch.json de VS Code
+  api-key: ${AUTH_SERVICE_API_KEY}
+
+subscription-service:
+  api-key: ${SUBSCRIPTION_SERVICE_API_KEY}
+
+# --- Configuración de PayPal (Sandbox) ---
+paypal:
+  mode: sandbox
+  # Nota: Las credenciales se inyectarán desde el launch.json de VS Code
+  client-id: ${PAYPAL_SANDBOX_CLIENT_ID}
+  client-secret: ${PAYPAL_SANDBOX_SECRET}
+  webhook-id: ${PAYPAL_SANDBOX_WEBHOOK_ID}
+
+# --- URLs de la Aplicación y AWS ---
+app:
+  frontend-url: http://localhost:3000
+  sqs:
+    subscription-events-queue-url: https://sqs.us-east-2.amazonaws.com/05182085
+
+# ✅ CORRECCIÓN QUIRÚRGICA: Añade esta línea
+  email:
+    from: direccion@eklesa.com # O el email verificado que vayas a usar (no-reply)
