@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +38,9 @@ import org.springframework.web.bind.annotation.*;
 public class SubscriptionController {
     
     private final SubscriptionService subscriptionService;
+
+    @Value("${auth-service.api-key:local-dev-key}")
+    private String authServiceApiKey;
     
     /**
      * Inicia un trial para una organización.
@@ -47,8 +52,14 @@ public class SubscriptionController {
     @PostMapping("/start-trial")
     @Operation(summary = "Iniciar trial", description = "Crea una suscripción trial para una organización nueva")
     public ResponseEntity<SubscriptionDTO> startTrial(
-        @Valid @RequestBody StartTrialRequest request
+        @Valid @RequestBody StartTrialRequest request,
+        @RequestHeader(value = "X-API-Key", required = false) String apiKey
     ) {
+        // Validar API key (endpoint interno llamado por auth-service)
+        if (apiKey == null || !apiKey.equals(authServiceApiKey)) {
+            log.warn("Invalid or missing API Key for start-trial endpoint");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         log.info("REST request to start trial for organization: {}", request.getOrganizationId());
         
         SubscriptionDTO subscription = subscriptionService.startTrial(request);

@@ -2,6 +2,9 @@ package com.eklesa.subscription.client;
 
 import com.eklesa.subscription.client.dto.OrganizationDTO;
 import com.eklesa.subscription.client.dto.UpdateSubscriptionStatusRequest;
+
+import feign.FeignException;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +78,7 @@ public interface AuthServiceClient {
      * @throws FeignException si hay error en la comunicación con auth-service
      * @throws IllegalArgumentException si el request es inválido
      */
-    @PutMapping("/api/organizations/subscription-status")
+    @PutMapping("/api/organizations/internal/subscription-status")
     void updateSubscriptionStatus(@RequestBody UpdateSubscriptionStatusRequest request);
     
     /**
