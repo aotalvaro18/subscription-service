@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Request para cancelar suscripción.
+ * Request para cancelar suscripción. Solo ´para cancelar.
  */
 @Data
 @Builder
