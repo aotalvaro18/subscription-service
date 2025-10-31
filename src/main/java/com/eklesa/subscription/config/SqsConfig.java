@@ -19,9 +19,10 @@ public class SqsConfig {
     private String region;
     
     @Bean
-    public SqsClient sqsClient() {
-        return SqsClient.builder()
-            .region(Region.of(region))
-            .build();
+public SqsClient sqsClient() {
+    return SqsClient.builder()
+        .region(Region.of(region))
+        .credentialsProvider(software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider.create())
+        .build();
     }
 }
