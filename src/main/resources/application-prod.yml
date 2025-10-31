@@ -21,6 +21,10 @@ spring:
       ddl-auto: validate # ¡MUY IMPORTANTE! Seguro para producción.
     show-sql: false
 
+  # --- ✅ CORRECCIÓN: Desactivar Flyway por completo ---
+  flyway:
+    enabled: true
+  
   # --- Configuración de Seguridad (Cognito) ---
   security:
     oauth2:

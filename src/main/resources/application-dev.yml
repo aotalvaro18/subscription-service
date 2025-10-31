@@ -37,7 +37,7 @@ spring:
 
 # --- URLs de otros Microservicios ---
 auth-service:
-  url: qawwfrmbwg.us-east-2.awsapprunner.com # Sin https://
+  url: https://qawwfrmbwg.us-east-2.awsapprunner.com # Sin https://
   # Nota: Las API keys se inyectarán desde el launch.json de VS Code
   api-key: ${AUTH_SERVICE_API_KEY}
 
@@ -56,7 +56,7 @@ paypal:
 app:
   frontend-url: http://localhost:3000
   sqs:
-    subscription-events-queue-url: https://sqs.us-east-2.amazonaws.com/05182085
+    subscription-events-queue-url: https://sqs.us-east-2.amazonaws.com/051820855729/eklesa-subscription-events
 
 # ✅ CORRECCIÓN QUIRÚRGICA: Añade esta línea
   email:

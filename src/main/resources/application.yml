@@ -67,7 +67,3 @@ logging:
   level:
     com.eklesa.subscription: DEBUG
     org.springframework.web: INFO
-
-# Deshabilitar Flyway globalmente
-  flyway:
-    enabled: false
